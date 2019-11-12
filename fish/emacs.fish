@@ -1,2 +1,2 @@
-alias edit "emacsclient -t -c"
+alias edit "emacsclient -t -c -a ''"
 alias e "edit"

@@ -46,9 +46,10 @@ USER $username
 RUN curl -L https://get.oh-my.fish > install.fish \
  && fish -l ./install.fish --noninteractive --yes \
  && fish -l -c "omf install kawasaki" \
- && mkdir -p /home/$username/.config/fish/conf.d
-
+ && mkdir -p /home/$username/.config/fish/conf.d \
+ && rm install.fish
 COPY --chown=$username:$username ./fish/ /home/$username/.config/fish/conf.d
+COPY --chown=$username:$username fish_variables /home/$username/.config/fish/fish_variables
 
 # Go tools
 RUN set -x \
