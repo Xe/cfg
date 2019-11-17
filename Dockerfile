@@ -6,7 +6,7 @@ RUN apk upgrade --no-cache \
  && apk add --no-cache ca-certificates \
  && apk add --no-cache --virtual xe-alpine-base emacs curl fish git openssh-client openssh-keygen \
       sudo build-base luarocks5.3 lua5.3 lua5.3-sec lua5.3-socket lua5.3-yaml lua5.3-moonscript \
-      lua5.3-dev \
+      lua5.3-dev gnupg \
       -X https://xena.greedo.xeserv.us/pkg/alpine/edge/core/ --allow-untrusted \
       xeserv-repo \
  && wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
@@ -79,9 +79,10 @@ RUN git config --global user.name "$gecos" \
 # Spacemacs
 COPY --chown=$username:$username .spacemacs .spacemacs
 RUN git clone https://github.com/syl20bnr/spacemacs /home/$username/.emacs.d \
- && emacs --daemon \
+ && emacs --insecure --daemon \
  && emacsclient --eval '(kill-emacs)' \
- && emacs --daemon \
+ && gpg --homedir ~/.emacs.d/elpa/gnupg --receive-keys 066DAFCB81E42C40 \
+ && emacs --insecure --daemon \
  && emacsclient --eval '(kill-emacs)'
 
 CMD ["fish", "-l"]
