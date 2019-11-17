@@ -302,6 +302,8 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  (setenv "PATH" (concat (getenv "PATH") ":" (concat (getenv "HOME") "/go/bin")))
+  (setq exec-path (append exec-path (concat (getenv "HOME") "/go/bin")))
   )
 
 (defun dotspacemacs/user-config ()
@@ -311,6 +313,30 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (add-hook 'text-mode-hook 'auto-fill-mode)
+  (setq-default fill-column 80)
+  (defun chomp (str)
+    "Chomp leading and tailing whitespace from STR."
+    (while (string-match "\\`\n+\\|^\\s-+\\|\\s-+$\\|\n+\\'"
+                         str)
+      (setq str (replace-match "" t t str)))
+    str)
+  (setq gofmt-command "goimports")
+  (defun eshell/e (arg)
+    "opens a given file in emacs from eshell"
+    (find-file arg))
+
+  (defun eshell/eh (arg)
+    "opens a file in emacs from shell horizontally"
+    (split-window-vertically)
+    (other-window 1)
+    (find-file arg))
+
+  (defun eshell/ev (arg)
+    "opens a file in emacs from shell vertically"
+    (split-window-horizontally)
+    (other-window 1)
+    (find-file arg))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
