@@ -38,12 +38,6 @@ RUN set -x \
  && mkdir -p /home/$username \
  && chown -R $username:$username /home/$username
 
-# Install go
-ENV GO_VERSION 1.13.4
-ENV GOPROXY https://cache.greedo.xeserv.us
-ENV GO111MODULE on
-COPY --from=go /usr/local/bin/go /usr/local/bin/go
-
 # Setup dependencies
 USER $username
 
@@ -59,14 +53,34 @@ RUN curl -L https://get.oh-my.fish > install.fish \
 COPY --chown=$username:$username ./fish/ /home/$username/.config/fish/conf.d
 COPY --chown=$username:$username fish_variables /home/$username/.config/fish/fish_variables
 
+# Install go
+ENV GO_VERSION 1.13.5
+ENV GOPROXY https://cache.greedo.xeserv.us
+ENV GO111MODULE on
+COPY --from=go /usr/local/bin/go /usr/local/bin/go
+
 # Go tools
 RUN set -x \
  && go download \
- && go get github.com/rogpeppe/godef \
- && go get golang.org/x/tools/cmd/guru \
- && go get golang.org/x/tools/cmd/gorename \
- && go get golang.org/x/tools/cmd/goimports \
- && go get github.com/stamblerre/gocode
+ && GO111MODULE=on go get -v golang.org/x/tools/gopls@latest \
+ && go get -v golang.org/x/tools/cmd/godoc \
+ && go get -v golang.org/x/tools/cmd/goimports \
+ && go get -v golang.org/x/tools/cmd/gorename \
+ && go get -v golang.org/x/tools/cmd/guru \
+ && go get -v github.com/cweill/gotests/... \
+ && go get -v github.com/davidrjenni/reftools/cmd/fillstruct \
+ && go get -v github.com/fatih/gomodifytags \
+ && go get -v github.com/godoctor/godoctor \
+ && go get -v github.com/golangci/golangci-lint/cmd/golangci-lint \
+ && go get -v github.com/haya14busa/gopkgs/cmd/gopkgs \
+ && go get -v github.com/josharian/impl \
+ && go get -v github.com/rogpeppe/godef \
+ && go get -v github.com/zmb3/gogetdoc \
+ && go get -v github.com/stamblerre/gocode \
+ && go get -v within.website/x/cmd/license \
+ && go get -v within.website/x/cmd/prefix \
+ && sudo rm -rf ~/go/pkg/mod \
+ && go clean -cache
 
 # bin
 RUN mkdir bin
