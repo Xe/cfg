@@ -1,5 +1,4 @@
 FROM xena/go-mini:1.13.3 AS go
-FROM xena/pandoc AS pandoc
 FROM xena/mdbook AS mdbook
 FROM alpine:edge
 
@@ -17,7 +16,6 @@ RUN apk upgrade --no-cache \
  && rm glibc-2.29-r0.apk \
  && ln -s /usr/lib/libncurses.so.5 /usr/lib/libtinfo.so.5
 
-COPY --from=pandoc /usr/local/bin/pandoc /usr/local/bin/pandoc
 COPY --from=mdbook /usr/local/bin/mdbook /usr/local/bin/mdbook
 
 # My user
