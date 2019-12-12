@@ -1,0 +1,19 @@
+#!/bin/bash
+
+uuid="$(uuidgen)"
+randsfx="${uuid:0:6}"
+user="cadey"
+name="${user}-${randsfx}"
+
+docker run \
+       --rm \
+       -it \
+       --init \
+       --hostname ${name} \
+       --name ${name} \
+       -v /home/cadey/code:/home/${user}/code \
+       -v /home/cadey/.ssh:/home/${user}/.ssh \
+       -v /home/cadey/gnupg:/home/${user}/.gnupg \
+       -e TERM="${TERM}" \
+       --dns 10.77.0.1 \
+       xena/cfg
