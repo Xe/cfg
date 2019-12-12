@@ -17,6 +17,9 @@ RUN apk upgrade --no-cache \
  && rm glibc-2.29-r0.apk \
  && ln -s /usr/lib/libncurses.so.5 /usr/lib/libtinfo.so.5
 
+COPY --from=pandoc /usr/local/bin/pandoc /usr/local/bin/pandoc
+COPY --from=mdbook /usr/local/bin/mdbook /usr/local/bin/mdbook
+
 # My user
 ARG username=cadey
 ARG uid=1000
