@@ -1,12 +1,14 @@
 FROM xena/go-mini:1.13.3 AS go
+FROM xena/pandoc AS pandoc
+FROM xena/mdbook AS mdbook
 FROM alpine:edge
 
 # Base system
 RUN apk upgrade --no-cache \
  && apk add --no-cache ca-certificates \
- && apk add --no-cache --virtual xe-alpine-base emacs curl fish git openssh-client openssh-keygen \
-      sudo build-base luarocks5.3 lua5.3 lua5.3-sec lua5.3-socket lua5.3-yaml lua5.3-moonscript \
-      lua5.3-dev gnupg \
+ && apk add --no-cache --virtual xe-alpine-base emacs curl fish git openssh-client \
+      openssh-keygen sudo build-base luarocks5.3 lua5.3 lua5.3-sec lua5.3-socket lua5.3-yaml \
+      lua5.3-moonscript lua5.3-dev gnupg libgcc gmp \
       -X https://xena.greedo.xeserv.us/pkg/alpine/edge/core/ --allow-untrusted \
       xeserv-repo \
  && wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
@@ -56,7 +58,6 @@ COPY --chown=$username:$username fish_variables /home/$username/.config/fish/fis
 # Install go
 ENV GO_VERSION 1.13.5
 ENV GOPROXY https://cache.greedo.xeserv.us
-ENV GO111MODULE on
 COPY --from=go /usr/local/bin/go /usr/local/bin/go
 
 # Go tools
@@ -81,6 +82,8 @@ RUN set -x \
  && go get -v within.website/x/cmd/prefix \
  && sudo rm -rf ~/go/pkg/mod \
  && go clean -cache
+
+ENV GO111MODULE on
 
 # bin
 RUN mkdir bin
